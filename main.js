@@ -27,7 +27,7 @@ const articles = $('.items-row').toArray().map((e)=>{
         $(e).find('.soldFor').text().replace('€', '')
     ]
 })
-let shipping = parseFloat($('.totals-summary > dl > div:nth-child(2) > dd').text().replace('€', ''));
+let shipping = parseFloat($('.totals-summary > dl > div:nth-child(2) > dd').text().replace(' €', '').replace(',','.'))
 console.log(articles, shipping);
 console.log(name, address1, address2, zip, city, country);
 

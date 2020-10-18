@@ -52,12 +52,12 @@ function run() {
         current += 10
         let articlesRow = articles.map((e, i) => {
             let quantity = parseInt(e[0])
-            let price = parseFloat(e[3].replace('EUR ', '').replace(',', '.'))
+            let price = parseFloat(e[3].replace('EUR ', '').replace(',', '.')).toFixed(2)
             let pos = (i + 1).toString();
             let desc = `${e[2].replace(/\s{2,}/g, ' ')}\nArtikel Nr.${e[1]}`;
             let quantityS = quantity.toString();
-            total += price * quantity
-            return [pos, desc, quantityS, price.toString(), (price * quantity).toString()]
+            total += price * quantity + shipping
+            return [pos, desc, quantityS, price, (price * quantity).toFixed(2)]
         });
         let shippingRow = [(articles.length + 1).toString(), 'Versand', '1', shipping.toFixed(2), shipping.toFixed(2)];
         let zwischensumme = ["", "", "", "Summe Netto", total.toFixed(2)];
