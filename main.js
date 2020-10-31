@@ -2,7 +2,7 @@
 
 console.log('Loaded')
 
-const texts = $('.info-item dd .txt-tobe-copied').toArray().map((e)=>{
+const texts = $('.info-item dd .txt-tobe-copied').toArray().map((e) => {
     return $(e).text()
 })
 
@@ -19,7 +19,7 @@ let all_articles = []
 // const articles = big_table.find('tbody tr').get().filter((_, i) => i > 0).map((e) => {
 //     return $(e).find('td').get().filter((e, i) => i !== 2 && i < 5).map(e => $.trim($(e).text()));
 // });
-const articles = $('.items-row').toArray().map((e)=>{
+const articles = $('.items-row').toArray().map((e) => {
     return [
         parseInt($(e).find('.quantity').text()),
         $(e).find('.item-itemID').text().replace('(', '').replace(')', ''),
@@ -27,7 +27,7 @@ const articles = $('.items-row').toArray().map((e)=>{
         $(e).find('.soldFor').text().replace('€', '')
     ]
 })
-let shipping = parseFloat($('.totals-summary > dl > div:nth-child(2) > dd').text().replace(' €', '').replace(',','.'))
+let shipping = parseFloat($('.totals-summary > dl > div:nth-child(2) > dd').text().replace(' €', '').replace(',', '.'))
 console.log(articles, shipping);
 console.log(name, address1, address2, zip, city, country);
 
@@ -35,13 +35,15 @@ all_events = $('.purchase-details .info-item dd').toArray()
 let buyDay = $(all_events[3]).text()
 let payDay = $(all_events[4]).text().split(' ').slice(0, 3).join(" ")
 
+let reduction = parseFloat($('.totals-summary > dl > div:nth-child(3) > dd').text().replace(' €', '').replace(',', '.'))
+
 const changeDate = d => {
     const parts = d.split(' ')
     parts[1] += '.'
     return parts.join(" ")
 }
 
-console.log(buyDay, payDay)
+console.log(buyDay, payDay, reduction)
 
 
 moment.locale('de');
@@ -63,7 +65,8 @@ let obj = {
     buyDateString,
     shipping,
     payDateString,
-    invoiceFileDate
+    invoiceFileDate,
+    reduction
 };
 chrome.storage.sync.set(obj)
 

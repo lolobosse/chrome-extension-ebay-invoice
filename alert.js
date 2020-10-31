@@ -7,9 +7,9 @@ Number.prototype.pad = function (size) {
 }
 
 function run() {
-    chrome.storage.sync.get(['name', 'address1', 'address2', 'zip', 'city', 'country', 'articles', 'buyDateString', 'payDateString', 'rnr', 'shipping', 'invoiceFileDate'], (result) => {
-        const {name, address1, address2, zip, city, country, articles, buyDateString, payDateString, rnr, shipping, invoiceFileDate} = result;
-        console.log(name, address1, address2, zip, city, country, articles, buyDateString, payDateString, rnr, shipping, invoiceFileDate)
+    chrome.storage.sync.get(['name', 'address1', 'address2', 'zip', 'city', 'country', 'articles', 'buyDateString', 'payDateString', 'rnr', 'shipping', 'invoiceFileDate', 'reduction'], (result) => {
+        const {name, address1, address2, zip, city, country, articles, buyDateString, payDateString, rnr, shipping, invoiceFileDate, reduction} = result;
+        console.log(name, address1, address2, zip, city, country, articles, buyDateString, payDateString, rnr, shipping, invoiceFileDate, reduction)
 
         var doc = new jsPDF();
 
@@ -56,18 +56,21 @@ function run() {
             let pos = (i + 1).toString();
             let desc = `${e[2].replace(/\s{2,}/g, ' ')}\nArtikel Nr.${e[1]}`;
             let quantityS = quantity.toString();
-            total += price * quantity + shipping
+            total += price * quantity
             return [pos, desc, quantityS, price, (price * quantity).toFixed(2)]
         });
+        total += shipping
         let shippingRow = [(articles.length + 1).toString(), 'Versand', '1', shipping.toFixed(2), shipping.toFixed(2)];
         let zwischensumme = ["", "", "", "Summe Netto", total.toFixed(2)];
+        let reductionText = ["", "", "", "Rabatt", reduction.toFixed(2)];
+        total += reduction
         let mwst = ["", "", "", "MwSt 0%*", 0.0.toFixed(2)];
         let brutto = ["", "", "", "Gesammtbetrag Brutto", total.toFixed(2)];
         let zahlung = ["", `Zahlung von ${payDateString}`, "", "", total.toFixed(2)];
         let offen = ["", `offener Betrag`, "", "", 0.00.toFixed(2)];
         doc.autoTable({
             head: [['Pos.', 'Bezeichnung', 'Menge', 'Einzel (€)', 'Gesamt (€)']],
-            body: articlesRow.concat([shippingRow], [zwischensumme], [mwst], [brutto], [zahlung], [offen]),
+            body: articlesRow.concat([shippingRow], [zwischensumme], [reductionText], [mwst], [brutto], [zahlung], [offen]),
             startY: current,
         })
         current = doc.lastAutoTable.finalY + 10;
